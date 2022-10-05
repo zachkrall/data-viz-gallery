@@ -16,7 +16,6 @@ export const Playground: FC<PlaygroundProps> = ({ code }) => {
   initialCode.current = code
 
   useEffect(() => {
-    console.log("initial code", initialCode.current)
     updateCode(initialCode.current)
   }, [updateCode])
 

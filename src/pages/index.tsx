@@ -30,6 +30,8 @@ export default function Home({ examples }) {
 export const getStaticProps = async () => {
   const examples = getExamples()
 
+  console.log(examples)
+
   return {
     props: {
       examples,
