@@ -1,12 +1,23 @@
-import fs from 'fs'
-import path from 'path'
+import fs from "fs"
+import path from "path"
+import yaml from "js-yaml"
 
-export const getExample = (slug: string) => {
-	const srcDir = path.resolve(process.cwd(), 'src');
-	const exampleDir = path.resolve(srcDir, 'examples')
-	const examplePath = path.resolve(exampleDir, slug)
+export const getExample = async (slug: string) => {
+  const srcDir = path.resolve(process.cwd(), "src")
+  const exampleDir = path.resolve(srcDir, "examples")
+  const examplePath = path.resolve(exampleDir, slug)
 
-	const file = fs.readFileSync(`${examplePath}.js`, 'utf8')
+  try {
+    const file = fs.readFileSync(`${examplePath}/app.js`, "utf8")
 
-	return file;
+    const config = yaml.load(
+      fs.readFileSync(`${examplePath}/config.yml`, "utf8")
+    )
+    return {
+      contents: file,
+      config,
+    }
+  } catch (e) {
+    return null
+  }
 }

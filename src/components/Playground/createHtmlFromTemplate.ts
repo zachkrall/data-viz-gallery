@@ -3,25 +3,10 @@ import { compileJS } from "./compileJS"
 
 export const createHtmlFromTemplate = (
   js: string,
-  external_resources: string[],
+  external_css: string[],
+  external_js: string[],
   template?: string
 ) => {
-  const { cssResources, jsResources } = external_resources.reduce<{
-    css: string[]
-    js: string[]
-  }>(
-    (acc, cur) => {
-      if (cur.endsWith(".css")) {
-        acc.css.push(cur)
-      }
-      if (cur.endsWith(".js")) {
-        acc.js.push(cur)
-      }
-      return acc
-    },
-    { css: [], js: [] }
-  )
-
   const t =
     template ??
     `
@@ -55,8 +40,8 @@ export const createHtmlFromTemplate = (
   try {
     const view = {
       jsCode: compileJS(js).code,
-      cssResources,
-      jsResources,
+      cssResources: external_css,
+      jsResources: external_js,
     }
 
     return Mustache.render(t, view)

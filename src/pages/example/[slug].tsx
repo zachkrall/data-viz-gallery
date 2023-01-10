@@ -8,9 +8,10 @@ import Link from "next/link"
 export type ExamplePageProps = {
   title: string
   code: string
+  config: Record<string, unknown>
 }
 
-export default function ExamplePage({ title, code }) {
+export default function ExamplePage({ title, code, config }) {
   return (
     <div className={"flex flex-col fixed inset-0 gap-2"}>
       <div className={"border-b p-2 bg-gray-100 text-sm"}>
@@ -18,7 +19,7 @@ export default function ExamplePage({ title, code }) {
           <a>{"←"}</a>
         </Link>
       </div>
-      <Playground code={code} />
+      <Playground code={code} config={config} />
     </div>
   )
 }
@@ -44,11 +45,12 @@ export const getStaticProps: GetStaticProps<ExamplePageProps> = async (
   context
 ) => {
   const slug = stringOr(context.params.slug, null)
-  const sourceCode = getExample(slug)
+  const file = await getExample(slug)
 
   return {
     props: {
-      code: sourceCode,
+      code: file.contents,
+      config: file.config,
       title: slug || "untitled",
     },
   }
