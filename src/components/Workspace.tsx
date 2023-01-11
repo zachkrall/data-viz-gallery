@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { bundleFiles } from "../lib/bundleFiles"
 import { CodeEditor } from "./CodeEditor"
-import { createHtmlFromTemplate } from "./Playground/createHtmlFromTemplate"
 import { Preview } from "./Preview"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
 
