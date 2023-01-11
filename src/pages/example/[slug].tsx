@@ -1,25 +1,19 @@
-import { getExample } from "../../lib/getExample"
 import { getExamples } from "../../lib/getExamples"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { stringOr } from "../../utils/stringOr"
-import { Playground } from "../../components/Playground/Playground"
-import Link from "next/link"
+import { Workspace } from "../../components/Workspace"
+import { getFiles } from "../../lib/getFiles"
+import { bundleFiles } from "../../lib/bundleFiles"
 
 export type ExamplePageProps = {
-  title: string
-  code: string
-  config: Record<string, unknown>
+  files: Record<string, string>
+  initialBundle: string
 }
 
-export default function ExamplePage({ title, code, config }) {
+export default function ExamplePage({ files, initialBundle }) {
   return (
-    <div className={"flex flex-col fixed inset-0 gap-2"}>
-      <div className={"border-b p-2 bg-gray-100 text-sm"}>
-        <Link href="/">
-          <a>{"←"}</a>
-        </Link>
-      </div>
-      <Playground code={code} config={config} />
+    <div className={"bg-black flex fixed inset-0 overflow-auto"}>
+      <Workspace files={files} initialBundle={initialBundle} />
     </div>
   )
 }
@@ -45,12 +39,13 @@ export const getStaticProps: GetStaticProps<ExamplePageProps> = async (
   context
 ) => {
   const slug = stringOr(context.params.slug, null)
-  const file = await getExample(slug)
+  const files = await getFiles(slug)
+  const initialBundle = await bundleFiles(files)
 
   return {
     props: {
-      code: file.contents,
-      config: file.config,
+      files,
+      initialBundle,
       title: slug || "untitled",
     },
   }

@@ -1,84 +1,56 @@
-const PICTORIAL_UNIT_IMAGE = `https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/bust-in-silhouette_1f464.png`
-const NYC_FERRY_RIDERSHIP_URL = `https://data.cityofnewyork.us/resource/t5n6-gx8c.json`
+import 'https://d3js.org/d3.v7.min.js';
 
-const getData = async () => {
-  const json = await d3.json(NYC_FERRY_RIDERSHIP_URL)
+// Incoming data
+const data = [
+  'yellow', 'blue',   'blue',   'yellow', 'yellow', 'yellow', 'yellow',
+  'blue',   'red',    'blue',   'blue',   'blue',   'yellow', 'red',
+  'blue',   'blue',   'red',    'yellow', 'blue',   'blue',   'yellow',
+  'blue',   'blue',   'red',    'yellow', 'red',    'yellow', 'yellow',
+  'yellow', 'red',    'red',    'blue',   'red',    'red',    'yellow',
+  'red',    'red',    'blue',   'yellow', 'yellow', 'yellow', 'blue',
+  'blue',   'blue',   'yellow', 'blue',   'blue',   'red',    'red',
+  'yellow', 'red',    'yellow', 'blue',   'red',    'yellow', 'blue',
+  'red',    'yellow', 'red',    'yellow', 'blue',   'red',    'red',
+  'yellow', 'red',    'red',    'red',    'yellow', 'red',    'blue',
+  'blue',   'blue',   'red',    'red',    'blue',   'blue',   'red',
+  'red',    'blue',   'red',    'red',    'blue',   'yellow', 'yellow',
+  'yellow', 'red',    'yellow', 'blue',   'red',    'yellow', 'blue',
+  'blue',   'blue',   'red',    'blue',   'blue',   'yellow', 'red',
+  'blue',   'red'
+];
 
-  const data = d3.rollup(
-    json,
-    (arr) => {
-      return d3.sum(arr, (d) => d["boardings"])
-    },
-    (d) => {
-      return d["stop"]
-    }
-  )
-
-  return data
+const iconMap = {
+  'red':    '🔴',
+  'blue':   '🔵',
+  'yellow': '🟡'
 }
 
-const main = async () => {
-  const data = await getData()
+const chart = d3.select('#chart')
 
-  const chart = d3.select("#root")
+const cleanedData = d3.rollup(data, v => v.length, d => d)
 
-  const make_heading = (g) => {
-    g.append("thead")
-      .append("tr")
-      .selectAll("td")
-      .data(["Stop Name", "", "Total"])
-      .join("td")
-      .text((d) => d)
-  }
+const dataResults = d3.select('#dataset')
+  .append('code')
+  .append('pre')
+  .style('display', 'block')
+  .style('width', '100%')
+  .style('min-height', '10rem')
+  .text(JSON.stringify(Object.fromEntries(cleanedData), null, 4))
 
-  const make_label = (g) => {
-    g.append("td")
-      .style("border-bottom", "1px solid black")
-      .text((d) => d)
-  }
 
-  const make_num = (g) => {
-    g.append("td")
-      .style("border-bottom", "1px solid black")
-      .text((d) => data.get(d))
-  }
-
-  const make_images = (g) => {
-    g.append("td")
-      .style("border-bottom", "1px solid black")
-      .selectAll("span")
-      .data((d) => {
-        const count = Math.floor(data.get(d) / 100)
-        const remainder = (data.get(d) % 100) / 100
-
-        const fake_array = Array.from({ length: count }).fill(1.0)
-
-        // [... 1.0, 1.0, 1.0, 1.0, 0.2]
-        if (remainder > 0) {
-          fake_array.push(remainder)
-        }
-
-        return fake_array
-      })
-      .join("span")
-      .style("display", "inline-block")
-      .style("background-image", `url(${PICTORIAL_UNIT_IMAGE})`)
-      .style("background-size", "cover")
-      .style("width", (d) => `${20 * d}px`)
-      .style("height", "20px")
-  }
-
-  chart
-    .append("table")
-    .call(make_heading)
-    .style("border-collapse", "collapse")
-    .append("tbody")
-    .selectAll("tr")
-    .data(data.keys())
-    .join("tr")
-    .call(make_label)
-    .call(make_images)
-    .call(make_num)
-}
-
-main()
+chart
+  .append('table')
+  .selectAll('tr')
+  .data(cleanedData)
+  .join('tr')
+  .call(row => {
+    row.append('td').text(d => d[0])
+  })
+  .call(row => {
+    row
+    .append('td')
+    .selectAll('span')
+    .data(d => Array.from({length: d[1] }).map(() => d[0]))
+    .join('span')
+    .text(d => iconMap[d])
+  })

@@ -1,5 +1,0 @@
-title: Scatter
-
-external_resources:
-    - https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css
-    - https://unpkg.com/d3@7.6.1/dist/d3.min.js
