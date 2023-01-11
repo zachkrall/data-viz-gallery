@@ -8,7 +8,7 @@
     "export": "next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "format": "prettier . --write"
   },
   "dependencies": {
