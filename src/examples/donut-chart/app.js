@@ -1,4 +1,4 @@
-import 'https://d3js.org/d3.v7.min.js';
+import "https://d3js.org/d3.v7.min.js"
 
 // set the dimensions and margins of the graph
 const width = 450,

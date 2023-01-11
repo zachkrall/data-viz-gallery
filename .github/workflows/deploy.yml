@@ -10,7 +10,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   deploy:
@@ -42,7 +42,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
       # ------------------------------------------
       # setup pnpm
